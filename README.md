@@ -8,10 +8,10 @@ This is a Unix utility that as standard input takes the file to print on the pap
 
 Pontus helped my taking photos of a number of punched paper tapes from DEC.
 
-[Imgur](https://i.imgur.com/DXAI5qAl.jpg)
+![Imgur](https://i.imgur.com/DXAI5qAl.jpg)
 
 Then I compiled all patterns on a page and figured out the encoding of each character.
 
-[Imgur](https://i.imgur.com/hd8ghFfl.jpg?1)
+![Imgur](https://i.imgur.com/hd8ghFfl.jpg?1)
 
 
