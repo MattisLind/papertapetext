@@ -3,7 +3,7 @@ OBJS=papertape.o main.o
 
 CC=cc
 
-all: papertape papertape-pdp11.abs
+all: papertape punchedpapertape
 
 papertape: $(OBJS)
 	$(CC) -o $@ $?
@@ -16,6 +16,9 @@ papertape: $(OBJS)
 clean:
 	@rm -f $(OBJS)
 	@rm -f papertape
+	@rm -f leader space punchedpapertape 
+	@rm -f papertape-pdp11.abs
+	@rm -f papertape-pdp11.bin
 
 papertape-pdp11.abs: papertape-pdp11.bin
 	bin2abs $^ 0200 > $@
@@ -25,8 +28,8 @@ papertape-pdp11.bin: papertape-pdp11.o
 
 # to get the rigt order in the binary crt0.s has to be the first file
 
-papertape-pdp11.o: crt0.s papertape.c main-pdp11.c 
-	pdp11-aout-gcc -Os -m10  -Ttext 80 -msoft-float  -nostartfiles  -nodefaultlibs  -nostdlib   $^  -o testplot.o
+papertape-pdp11.o: crt0.s papertape.c pdp11-main.c 
+	pdp11-aout-gcc -Os -m10  -Ttext 80 -msoft-float  -nostartfiles  -nodefaultlibs  -nostdlib   $^  -o $@
 
 install:
 	@cp papertape /usr/local/bin

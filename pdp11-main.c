@@ -11,19 +11,19 @@ int printPaperTapeChar (int, int (*)(int));
 
 int putchar (int ch)
 {
-  while (!(0200 & * ((volatile int *) (CONSOLE_TX_CS)))); // wait for TX ready
+  while (*((volatile char *) (CONSOLE_TX_CS)) < 0); // wait for TX ready
   *((volatile int *) (CONSOLE_TX_DB)) = ch;
   return 0;
 }
 
 int  putPunchChar (int ch)
 {
-  while (!(0200 & * ((volatile int *) (PUNCH_CS)))); // Wait for punch ready
+  while (*((volatile char *) (PUNCH_CS))<0); // Wait for punch ready
   *((volatile int *) (PUNCH_DB)) = ch;
   return 0;
 }
 
-void puts (char * str) {
+int puts (const char * str) {
   char ch;
   while ((ch=*str++)) {
     putchar(ch);
@@ -31,7 +31,7 @@ void puts (char * str) {
 }
 
 char getchar () {
-  while (!(0200 & *((volatile int *) (CONSOLE_RX_CS)))); // Wait for character received
+  while (*((volatile char *) (CONSOLE_RX_CS))<0); // Wait for character received
   return *((volatile int *) (CONSOLE_RX_DB));
 }
 

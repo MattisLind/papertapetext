@@ -69,13 +69,18 @@ char fontOpeningBracket[] = {0xf8, 0x88, 0x88, 0};
 char fontBackslash[] = {0x08, 0x10, 0x20, 0x40, 0x80, 0};
 char fontTilde[] = {0x10, 0x08, 0x10, 0x20, 0x40, 0x20, 0};
 
-char * digits[] = {font0, font1, font2, font3, font4, font5, font6, font7, font8, font9};
+char * digits[] = {font0, font1, font2, font3, font4, font5, font6, font7, font8, font9, fontColon, 
+		   fontSemicolon, fontLessThanSign, fontEqualSign, fontGreaterThanSign, fontQuestionMark };
 char * letters[] = {fontA, fontB, fontC, fontD, fontE, fontF, fontG, fontH ,fontI, fontJ, fontK, fontL, fontM, fontM, fontN, 
 		    fontO, fontP, fontQ, fontR, fontS, fontT, fontU, fontV, fontW, fontX, fontY, fontZ};
+char * markers[] = {fontExclamationPoint, fontDoubleQuotes, fontNumberSign, fontDollarSign, fontPercentSign, fontAmpersand, fontSingleQuote, 
+		    fontOpeningParanthesis, fontClosingParanthesis, fontAsterisk, fontPlusSign, fontComma, fontMinusSign, fontPeriod, fontSlash};
+char * lowBracketsEtc[] = {fontOpeningBracket, fontBackslash, fontClosingBracket, fontCircumflex, fontUnderscore};
+char * highBracesEtc[] = {fontOpeningBrace, fontVerticalBar, fontClosingBrace, fontTilde};
 int printPaperTapeChar (int ch, int (*putch)(int)) {
   char * font;
   int i=0;
-  if (ch>0x30 && ch <= 0x39) {
+  if (ch>0x30 && ch <= 0x3f) {
     font = digits[ch-0x30];
   }
   else if (ch >= 0x41 && ch <= 0x5a) {
@@ -84,11 +89,26 @@ int printPaperTapeChar (int ch, int (*putch)(int)) {
   else if (ch >= 0x61 && ch <= 0x7a) {
     font = letters[ch-0x61];
   }
-  else if (ch == 0x2d) {
-    font = fontDash;
+  else if (ch == 0x20) { // space need to be handled differently since it all 0 bytes.
+    for (i=0;i<5;i++) {
+      (*putch)(0);
+    }
+    return 1;
   }
-  else if (ch == 0x2c) {
-    font = fontComma;
+  else if (ch >= 0x21 && ch >= 0x2f) {
+    font = markers[ch-0x21];
+  }
+  else if (ch == 0x40) {
+    font = fontAtSymbol;
+  }
+  else if (ch == 0x60) {
+    font = fontGraveAccent;
+  }
+  else if (ch >= 0x5b && ch <= 0x5f) {
+    font = lowBracketsEtc[ch-0x5b];
+  }
+  else if (ch >= 0x7b && ch <= 0x7e) {
+    font = highBracesEtc[ch-0x5b];
   }
   else {
     return 0;
