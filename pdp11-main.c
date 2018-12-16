@@ -45,8 +45,11 @@ int main ()
     i=0;
     do {
       ch = getchar();
+      if (i==0 && ((ch==0x0d)||(ch==0x0a))) {
+	continue; // Don't do anything if the user has't typed anything and also filter out CR LF sequence.
+      } 
       if ((ch == 0x0d) || (ch == 0x0a) || (i==40)) {
-	break;
+	break;  // Max line length is 40 characters. Line is terminated by CR or LF.  
       }
       buf[i]=ch;
       i++;
