@@ -11,14 +11,14 @@ int printPaperTapeChar (int, int (*)(int));
 
 int putchar (int ch)
 {
-  while (*((volatile char *) (CONSOLE_TX_CS)) < 0); // wait for TX ready
+  while (*((volatile char *) (CONSOLE_TX_CS)) >= 0); // wait for TX ready
   *((volatile int *) (CONSOLE_TX_DB)) = ch;
   return 0;
 }
 
 int  putPunchChar (int ch)
 {
-  while (*((volatile char *) (PUNCH_CS))<0); // Wait for punch ready
+  while (*((volatile char *) (PUNCH_CS))>=0); // Wait for punch ready
   *((volatile int *) (PUNCH_DB)) = ch;
   return 0;
 }
@@ -31,17 +31,17 @@ int puts (const char * str) {
 }
 
 char getchar () {
-  while (*((volatile char *) (CONSOLE_RX_CS))<0); // Wait for character received
+  while (*((volatile char *) (CONSOLE_RX_CS))>=0); // Wait for character received
   return *((volatile int *) (CONSOLE_RX_DB));
 }
 
 char buf[40];
-
+char prompt[] = "PUNCHED PAPER TAPE WRITER>";
 int main ()
 {
   int i, ch;
   while(1) {
-    puts("PUNCHED PAPER TAPE WRITER>");
+    puts(prompt);
     i=0;
     do {
       ch = getchar();
@@ -58,7 +58,7 @@ int main ()
     buf[i]=0;
     putchar(0x0d); putchar(0x0a);
     i=0;
-    while ((ch = buf[i])!=0) {
+    while ((ch = buf[i++])!=0) {
       printPaperTapeChar(ch, putPunchChar);
     }
   }

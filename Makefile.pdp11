@@ -1,0 +1,57 @@
+CC=pdp11-aout-gcc
+AS=pdp11-aout-as
+
+
+%.o:%.c
+	$(CC) -c -Os -m10 -msoft-float -nostartfiles  -nodefaultlibs  -nostdlib -o $@ $^
+
+%.o:%.s
+	$(AS) -o $@ $^
+
+.PHONY: clean
+
+clean:
+	@rm -f $(OBJS)
+	@rm -f papertape
+	@rm -f leader space punchedpapertape 
+	@rm -f papertape-pdp11.abs
+	@rm -f papertape-pdp11.bin
+	@rm -f papertape-pdp11.textabs papertape-pdp11.dataabs
+	@rm -f papertape-pdp11.text papertape-pdp11.data
+	@rm -f papertape-pdp11.o 
+
+papertape-pdp11.abs: papertape-pdp11.textabs papertape-pdp11.dataabs
+	@cat $^ > $@
+	     
+papertape-pdp11.textabs: papertape-pdp11.text
+	@CODE=`pdp11-aout-objdump  -t papertape-pdp11.o | cut -d ' ' -f 1,13 | grep code | cut -d ' ' -f 1`; \
+	bin2abs $^ 0x$$CODE 0 > $@
+
+papertape-pdp11.dataabs: papertape-pdp11.data
+	@DATA=`pdp11-aout-objdump  -t papertape-pdp11.o | cut -d ' ' -f 1,13 | grep data | cut -d ' ' -f 1`; \
+	bin2abs $^ 0x$$DATA 1 > $@
+
+papertape-pdp11.text: papertape-pdp11.o 
+	@pdp11-aout-objcopy -j .text -O binary $^ $@
+
+papertape-pdp11.data: papertape-pdp11.o 
+	pdp11-aout-objcopy -j .data -O binary $^ $@
+
+# to get the rigt order in the binary crt0.s has to be the first file
+
+papertape-pdp11.o: crt0.o papertape.o pdp11-main.o
+	@pdp11-aout-ld   -T linker-script   -nostartfiles  -nodefaultlibs  -nostdlib  $^  -o $@
+
+install:
+	@cp papertape /usr/local/bin
+
+space: 
+	@dd if=/dev/zero of=$@ bs=1 count=20
+
+leader:
+	@echo "WWW.DATORMUSEUM.SE PAPER TAPE PRINTER" > tmp
+	@papertape < tmp > $@
+	@rm -f tmp 
+
+punchedpapertape: leader space DEC-11-L2PC-PO.ptap space papertape-pdp11.abs space
+	@cat $^ > $@ 

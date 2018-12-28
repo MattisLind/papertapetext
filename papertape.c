@@ -36,18 +36,18 @@ char font7[] = {0x18, 0xc8, 0x28, 0x18, 0};
 char font8[] = {0x50, 0xa8, 0xa8, 0x50, 0};
 char font9[] = {0x10, 0xa8, 0xa8, 0x70, 0};
 char font0[] = {0x70, 0xa8, 0x98, 0x70, 0};
-char fontExclamationPoint[] = {0xd8, 0x00};
+char fontExclamationPoint[] = {0xb8, 0x00};
 char fontDoubleQuotes[] = {0x18, 0x18, 0};
 char fontNumberSign[] = {0x50, 0xf8, 0x50,0xf8, 0x50, 0};
 char fontDollarSign[] = {0x90, 0xa8, 0xf8, 0x48, 0};
 char fontPercentSign[] = {0x98, 0x58, 0x20, 0xd0, 0xc8, 0};
 char fontAmpersand[] = {0xd0, 0xa8, 0x58, 0xa0, 0};
 char fontSingleQuote[] = {0x18, 0};
-char fontOpeningParanthesis[] = {0x88, 0x70, 0};
-char fontClosingParanthesis[] = {0x70, 0x88, 0};
+char fontClosingParanthesis[] = {0x88, 0x70, 0};
+char fontOpeningParanthesis[] = {0x70, 0x88, 0};
 char fontAsterisk[] = {0x50, 0x70, 0x50};
 char fontPlusSign[] = {0x20, 0x70, 0x20, 0};
-char fontComma[] = {0x80, 0xc0, 0};
+char fontComma[] = {0x80, 0x40, 0};
 char fontMinusSign[] = {0x20, 0x20, 0x20, 0};
 char fontPeriod[] = {0xc0, 0xc0, 0};
 char fontSlash[] = {0x80, 0x40, 0x20, 0x10, 0x08, 0};
@@ -71,7 +71,7 @@ char fontTilde[] = {0x10, 0x08, 0x10, 0x20, 0x40, 0x20, 0};
 
 char * digits[] = {font0, font1, font2, font3, font4, font5, font6, font7, font8, font9, fontColon, 
 		   fontSemicolon, fontLessThanSign, fontEqualSign, fontGreaterThanSign, fontQuestionMark };
-char * letters[] = {fontA, fontB, fontC, fontD, fontE, fontF, fontG, fontH ,fontI, fontJ, fontK, fontL, fontM, fontM, fontN, 
+char * letters[] = {fontA, fontB, fontC, fontD, fontE, fontF, fontG, fontH ,fontI, fontJ, fontK, fontL, fontM, fontN, 
 		    fontO, fontP, fontQ, fontR, fontS, fontT, fontU, fontV, fontW, fontX, fontY, fontZ};
 char * markers[] = {fontExclamationPoint, fontDoubleQuotes, fontNumberSign, fontDollarSign, fontPercentSign, fontAmpersand, fontSingleQuote, 
 		    fontOpeningParanthesis, fontClosingParanthesis, fontAsterisk, fontPlusSign, fontComma, fontMinusSign, fontPeriod, fontSlash};
@@ -80,7 +80,7 @@ char * highBracesEtc[] = {fontOpeningBrace, fontVerticalBar, fontClosingBrace, f
 int printPaperTapeChar (int ch, int (*putch)(int)) {
   char * font;
   int i=0;
-  if (ch>0x30 && ch <= 0x3f) {
+  if (ch>=0x30 && ch <= 0x3f) {
     font = digits[ch-0x30];
   }
   else if (ch >= 0x41 && ch <= 0x5a) {
@@ -95,7 +95,7 @@ int printPaperTapeChar (int ch, int (*putch)(int)) {
     }
     return 1;
   }
-  else if (ch >= 0x21 && ch >= 0x2f) {
+  else if (ch >= 0x21 && ch <= 0x2f) {
     font = markers[ch-0x21];
   }
   else if (ch == 0x40) {
@@ -108,7 +108,7 @@ int printPaperTapeChar (int ch, int (*putch)(int)) {
     font = lowBracketsEtc[ch-0x5b];
   }
   else if (ch >= 0x7b && ch <= 0x7e) {
-    font = highBracesEtc[ch-0x5b];
+    font = highBracesEtc[ch-0x7b];
   }
   else {
     return 0;
