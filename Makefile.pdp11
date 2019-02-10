@@ -19,6 +19,14 @@ clean:
 	@rm -f papertape-pdp11.textabs papertape-pdp11.dataabs
 	@rm -f papertape-pdp11.text papertape-pdp11.data
 	@rm -f papertape-pdp11.o 
+	@rm -f spaceinv-leader
+	@rm -f spaceinvaders.abs
+	@rm -f spaceinvaders.data
+	@rm -f spaceinvaders.dataabs
+	@rm -f spaceinvaders.out
+	@rm -f spaceinvaders.pt
+	@rm -f spaceinvaders.text
+	@rm -f spaceinvaders.textabs
 
 papertape-pdp11.abs: papertape-pdp11.textabs papertape-pdp11.dataabs
 	@cat $^ > $@
@@ -42,6 +50,35 @@ papertape-pdp11.data: papertape-pdp11.o
 papertape-pdp11.o: crt0.o papertape.o pdp11-main.o
 	@pdp11-aout-ld   -T linker-script   -nostartfiles  -nodefaultlibs  -nostdlib  $^  -o $@
 
+
+
+
+spaceinvaders.abs: spaceinvaders.textabs spaceinvaders.dataabs
+	@cat $^ > $@
+	     
+spaceinvaders.textabs: spaceinvaders.text spaceinvaders.out
+	@CODE=`pdp11-aout-objdump  -t spaceinvaders.out | cut -d ' ' -f 1,13 | grep code | cut -d ' ' -f 1`; \
+	bin2abs $< 0x$$CODE 0 > $@
+
+spaceinvaders.dataabs: spaceinvaders.data spaceinvaders.out
+	@DATA=`pdp11-aout-objdump  -t spaceinvaders.out | cut -d ' ' -f 1,13 | grep data | cut -d ' ' -f 1`; \
+	bin2abs $< 0x$$DATA 1 > $@
+
+spaceinvaders.text: spaceinvaders.out 
+	@pdp11-aout-objcopy -j .text -O binary $^ $@
+
+spaceinvaders.data: spaceinvaders.out 
+	pdp11-aout-objcopy -j .data -O binary $^ $@
+
+# to get the rigt order in the binary crt0.s has to be the first file
+
+spaceinvaders.out: crt0.o spaceinvaders.o
+	@pdp11-aout-ld   -T linker-script   -nostartfiles  -nodefaultlibs  -nostdlib  $^  -o $@
+
+
+
+
+
 install:
 	@cp papertape /usr/local/bin
 
@@ -53,5 +90,18 @@ leader:
 	@papertape < tmp > $@
 	@rm -f tmp 
 
-punchedpapertape: leader space DEC-11-L2PC-PO.ptap space papertape-pdp11.abs space
-	@cat $^ > $@ 
+spaceinv-leader:
+	@echo "WWW.DATORMUSEUM.SE SPACE INVADER DANCE" > tmp
+	@papertape < tmp > $@
+	@rm -f tmp 
+
+
+
+
+punchedpapertape:   space leader DEC-11-L2PC-PO.ptap papertape-pdp11.abs
+	@cat  $(foreach file,$(filter-out space, $^),$< $(file)) $< > $@
+
+spaceinvaders.pt:   space spaceinv-leader DEC-11-L2PC-PO.ptap spaceinvaders.abs
+	@cat  $(foreach file,$(filter-out space, $^),$< $(file)) $< > $@
+
+
