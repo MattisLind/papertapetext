@@ -72,8 +72,8 @@ spaceinvaders.data: spaceinvaders.out
 
 # to get the rigt order in the binary crt0.s has to be the first file
 
-spaceinvaders.out: crt0.o spaceinvaders.o
-	@pdp11-aout-ld   -T linker-script   -nostartfiles  -nodefaultlibs  -nostdlib  $^  -o $@
+spaceinvaders.out: crt0.o spaceinvaders.o linker-script
+	@pdp11-aout-ld   -T linker-script   -nostartfiles  -nodefaultlibs  -nostdlib  $(filter-out linker-script, $^)  -o $@
 
 
 
