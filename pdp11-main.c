@@ -32,7 +32,7 @@ int puts (const char * str) {
 
 char getchar () {
   while (*((volatile char *) (CONSOLE_RX_CS))>=0); // Wait for character received
-  return *((volatile int *) (CONSOLE_RX_DB));
+  return (*((volatile int *) (CONSOLE_RX_DB))) & 0x7f;
 }
 
 char buf[40];
