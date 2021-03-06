@@ -3,7 +3,7 @@ OBJS=papertape.o main.o
 
 CC=cc
 
-all: papertape punchedpapertape
+all: papertape
 
 papertape: $(OBJS)
 	$(CC) -o $@ $?
