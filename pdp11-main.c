@@ -51,6 +51,13 @@ int main ()
       if ((ch == 0x0d) || (ch == 0x0a) || (i==40)) {
 	break;  // Max line length is 40 characters. Line is terminated by CR or LF.  
       }
+      if (c == 0x08 || c == 0x7f) {
+        if (i > 0) {
+          i--;
+          putchar(0x08); putchar(0x20); putchar(0x08);
+        }
+        continue;
+      }
       buf[i]=ch;
       i++;
       putchar(ch);
